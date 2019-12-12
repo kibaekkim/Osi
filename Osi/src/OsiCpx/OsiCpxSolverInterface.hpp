@@ -255,6 +255,12 @@ public:
 	  "iteration" mean to the solver. */
   virtual int getIterationCount() const;
 
+  /** Get the number of nodes solved by branch-and-bound */
+  virtual int getNumNodes() const;
+
+  /** Get the best dual objective bound */
+  virtual double getBestDualBound() const;
+
   /** Get as many dual rays as the solver can provide. (In case of proven
           primal infeasibility there should be at least one.)
 
@@ -425,6 +431,15 @@ public:
     	solver-dependent. 
     */
   virtual void setRowPrice(const double *rowprice);
+
+  /** Set solution time limit */
+  virtual void setTimeLimit(double t);
+
+  /** Set branch-and-bound node limit */
+  virtual void setNodeLimit(int n);
+
+  /** Set Mip relative gap */
+  virtual void setMipRelGap(double gap);
 
   //-------------------------------------------------------------------------
   /**@name Methods to expand a problem.<br>

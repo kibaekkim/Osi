@@ -1542,6 +1542,26 @@ int OsiCpxSolverInterface::getIterationCount() const
     return CPXgetitcnt(env_, getMutableLpPtr());
 }
 //------------------------------------------------------------------
+int OsiCpxSolverInterface::getNumNodes() const
+{
+  if (probtypemip_)
+    return CPXgetnodecnt(env_, getMutableLpPtr());
+  else
+    return 0;
+}
+//------------------------------------------------------------------
+double OsiCpxSolverInterface::getBestDualBound() const
+{
+  double objval, objOffset;
+  if (probtypemip_) {
+    CPXgetbestobjval(env_, getMutableLpPtr(), &objval);
+    getDblParam(OsiObjOffset, objOffset);
+    objval -= objOffset;
+  } else
+    objval = getObjValue();
+  return objval;
+}
+//------------------------------------------------------------------
 std::vector< double * > OsiCpxSolverInterface::getDualRays(int maxNumRays,
   bool fullRay) const
 {
@@ -2096,6 +2116,21 @@ void OsiCpxSolverInterface::setRowPrice(const double *rs)
       checkCPXerror(err, "CPXcopystart", "setRowPrice");
     }
   }
+}
+
+//-----------------------------------------------------------------------------
+void OsiCpxSolverInterface::setTimeLimit(double t)
+{
+  CPXsetdblparam(env_, CPX_PARAM_TILIM, t);
+}
+//-----------------------------------------------------------------------------
+void OsiCpxSolverInterface::setNodeLimit(int n)
+{
+  CPXsetintparam(env_, CPX_PARAM_NODELIM, n);
+}
+void OsiCpxSolverInterface::setMipRelGap(double gap)
+{
+  CPXsetdblparam(env_, CPX_PARAM_EPGAP, gap);
 }
 
 //#############################################################################

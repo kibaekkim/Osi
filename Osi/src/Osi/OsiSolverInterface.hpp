@@ -703,6 +703,12 @@ public:
     */
   virtual int getIterationCount() const = 0;
 
+  /** Get the number of nodes solved by branch-and-bound */
+  virtual int getNumNodes() const {return 0;}
+
+  /** Get the best dual objective bound */
+  virtual double getBestDualBound() const {return 0.0;}
+
   /** Get as many dual rays as the solver can provide. In case of proven
 	primal infeasibility there should (with high probability) be at least
 	one.
@@ -896,6 +902,15 @@ public:
 	solution in any way is solver-dependent.
     */
   virtual void setRowPrice(const double *rowprice) = 0;
+
+  /** Set solution time limit */
+  virtual void setTimeLimit(double t) {}
+
+  /** Set branch-and-bound node limit */
+  virtual void setNodeLimit(int n) {}
+
+  /** Set Mip relative gap */
+  virtual void setMipRelGap(double gap) {}
 
   /** Fix variables at bound based on reduced cost
     
