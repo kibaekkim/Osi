@@ -107,9 +107,12 @@ AC_COIN_CHK_LIB(Xpress,[OsiXprLib OsiTest],[-lxprs -lxprl],[],[],
 AC_COIN_CHK_LIB(Gurobi,[OsiGrbLib OsiTest],[-lgurobi -lpthread -lm],[],[],
                 [GRBloadenv])
 
-AC_COIN_FINALIZE_FLAGS([OsiGlpkLib OskSpxLib OsiCpxLib OsiMskLib OsiXprLib OsiGrbLib OsiTest])
+AC_COIN_CHK_LIB(Scip,[OsiScipLib OsiTest],[-lscip],[],[],
+                [SCIPcreate])
 
-AC_COIN_CHK_HERE([OsiLib],[OsiGlpkLib OsiSpxLib OsiCpxLib OsiMskLib OsiXprLib OsiGrbLib],[osi])
+AC_COIN_FINALIZE_FLAGS([OsiGlpkLib OskSpxLib OsiCpxLib OsiMskLib OsiXprLib OsiGrbLib OsiScipLib OsiTest])
+
+AC_COIN_CHK_HERE([OsiLib],[OsiGlpkLib OsiSpxLib OsiCpxLib OsiMskLib OsiXprLib OsiGrbLib OsiScipLib],[osi])
 
 #############################################################################
 #                            Examples solver                                #
@@ -147,6 +150,11 @@ elif test "$coin_has_soplex" = yes ; then
   OSI_EXAMPLES_SOLVER_CFLAGS="$OSISPXLIB_CFLAGS"
   OSI_EXAMPLES_SOLVER_LFLAGS="$OSISPXLIB_LFLAGS"
   OSI_EXAMPLES_SOLVER_PCNAME=osi-soplex
+elif test "$coin_has_scip" = yes ; then
+  OSI_EXAMPLES_SOLVER_NAME=OsiScipSolverInterface
+  OSI_EXAMPLES_SOLVER_CFLAGS="$OSISCIPLIB_CFLAGS"
+  OSI_EXAMPLES_SOLVER_LFLAGS="$OSISCIPLIB_LFLAGS"
+  OSI_EXAMPLES_SOLVER_PCNAME=osi-scip
 else
   AC_MSG_WARN([No solver available, examples will not work.])
 fi
@@ -190,6 +198,7 @@ AC_CONFIG_FILES([Makefile
                  src/OsiXpr/Makefile
                  src/OsiGrb/Makefile
                  src/OsiSpx/Makefile
+                 src/OsiScip/Makefile
                  src/OsiCommonTest/Makefile
                  test/Makefile
                  osi.pc
@@ -226,6 +235,11 @@ fi
 if test "$coin_has_soplex" = yes ; then
   AC_CONFIG_FILES([osi-soplex.pc:src/OsiSpx/osi-soplex.pc.in])
   AC_CONFIG_HEADER([src/OsiSpx/config_osispx.h])
+fi
+
+if test "$coin_has_scip" = yes ; then
+  AC_CONFIG_FILES([osi-scip.pc:src/OsiScip/osi-scip.pc.in])
+  AC_CONFIG_HEADER([src/OsiScip/config_osiscip.h])
 fi
 
 AC_CONFIG_FILES([doxydoc/doxygen.conf])

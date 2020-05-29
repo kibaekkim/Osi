@@ -119,11 +119,13 @@ host_triplet = @host@
 @COIN_HAS_GUROBI_TRUE@am__append_10 = osi-gurobi.pc
 @COIN_HAS_SOPLEX_TRUE@am__append_11 = src/OsiSpx
 @COIN_HAS_SOPLEX_TRUE@am__append_12 = osi-soplex.pc
+@COIN_HAS_SCIP_TRUE@am__append_13 = src/OsiScip
+@COIN_HAS_SCIP_TRUE@am__append_14 = osi-scip.pc
 
 # We don't want to compile the test subdirectory, unless the test target
 # is specified.  But we need to list it as subdirectory to make sure that
 # it's included in the tarball
-@ALWAYS_FALSE@am__append_13 = test
+@ALWAYS_FALSE@am__append_15 = test
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
@@ -142,10 +144,11 @@ CONFIG_HEADER = $(top_builddir)/src/Osi/config.h \
 	$(top_builddir)/src/OsiGrb/config_osigrb.h \
 	$(top_builddir)/src/OsiMsk/config_osimsk.h \
 	$(top_builddir)/src/OsiXpr/config_osixpr.h \
-	$(top_builddir)/src/OsiSpx/config_osispx.h
+	$(top_builddir)/src/OsiSpx/config_osispx.h \
+	$(top_builddir)/src/OsiScip/config_osiscip.h
 CONFIG_CLEAN_FILES = examples/Makefile osi.pc osi-unittests.pc \
 	osi-cplex.pc osi-glpk.pc osi-gurobi.pc osi-mosek.pc \
-	osi-xpress.pc osi-soplex.pc doxydoc/doxygen.conf
+	osi-xpress.pc osi-soplex.pc osi-scip.pc doxydoc/doxygen.conf
 CONFIG_CLEAN_VPATH_FILES =
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
@@ -231,7 +234,7 @@ ETAGS = etags
 CTAGS = ctags
 CSCOPE = cscope
 DIST_SUBDIRS = src/Osi src/OsiCommonTest src/OsiCpx src/OsiGlpk \
-	src/OsiMsk src/OsiXpr src/OsiGrb src/OsiSpx test
+	src/OsiMsk src/OsiXpr src/OsiGrb src/OsiSpx src/OsiScip test
 pkgdatadir = $(datadir)/$(PACKAGE_TARNAME)
 pkgincludedir = $(includedir)/coin-or
 ACLOCAL = @ACLOCAL@
@@ -322,6 +325,11 @@ OSIMSKLIB_CFLAGS_NOPC = @OSIMSKLIB_CFLAGS_NOPC@
 OSIMSKLIB_LFLAGS = @OSIMSKLIB_LFLAGS@
 OSIMSKLIB_LFLAGS_NOPC = @OSIMSKLIB_LFLAGS_NOPC@
 OSIMSKLIB_PCFILES = @OSIMSKLIB_PCFILES@
+OSISCIPLIB_CFLAGS = @OSISCIPLIB_CFLAGS@
+OSISCIPLIB_CFLAGS_NOPC = @OSISCIPLIB_CFLAGS_NOPC@
+OSISCIPLIB_LFLAGS = @OSISCIPLIB_LFLAGS@
+OSISCIPLIB_LFLAGS_NOPC = @OSISCIPLIB_LFLAGS_NOPC@
+OSISCIPLIB_PCFILES = @OSISCIPLIB_PCFILES@
 OSISPXLIB_CFLAGS = @OSISPXLIB_CFLAGS@
 OSISPXLIB_LFLAGS = @OSISPXLIB_LFLAGS@
 OSISPXLIB_PCFILES = @OSISPXLIB_PCFILES@
@@ -445,11 +453,11 @@ DOXYTAG_EDIT = sed -e 's|@baredocdir_nosub@|$(datarootdir)/doc|g'
 ########################################################################
 SUBDIRS = src/Osi src/OsiCommonTest $(am__append_1) $(am__append_3) \
 	$(am__append_5) $(am__append_7) $(am__append_9) \
-	$(am__append_11) $(am__append_13)
+	$(am__append_11) $(am__append_13) $(am__append_15)
 pkgconfiglibdir = $(libdir)/pkgconfig
 pkgconfiglib_DATA = osi.pc osi-unittests.pc $(am__append_2) \
 	$(am__append_4) $(am__append_6) $(am__append_8) \
-	$(am__append_10) $(am__append_12)
+	$(am__append_10) $(am__append_12) $(am__append_14)
 all: all-recursive
 
 .SUFFIXES:
@@ -504,6 +512,8 @@ osi-mosek.pc: $(top_builddir)/config.status $(top_srcdir)/src/OsiMsk/osi-mosek.p
 osi-xpress.pc: $(top_builddir)/config.status $(top_srcdir)/src/OsiXpr/osi-xpress.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 osi-soplex.pc: $(top_builddir)/config.status $(top_srcdir)/src/OsiSpx/osi-soplex.pc.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+osi-scip.pc: $(top_builddir)/config.status $(top_srcdir)/src/OsiScip/osi-scip.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 doxydoc/doxygen.conf: $(top_builddir)/config.status $(top_srcdir)/doxydoc/doxygen.conf.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@

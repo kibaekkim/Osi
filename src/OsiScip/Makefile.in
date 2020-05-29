@@ -14,11 +14,9 @@
 
 @SET_MAKE@
 
-# Copyright (C) 2010 Lou Hafer
+# Copyright (C) 2020 Kibaek Kim.
 # All Rights Reserved.
 # This file is distributed under the Eclipse Public License.
-
-# Author:  Lou Hafer        SFU        2010-07-29
 
 # Copyright (C) 2006, 2007 International Business Machines and others.
 # All Rights Reserved.
@@ -108,22 +106,22 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-subdir = src/Osi
+subdir = src/OsiScip
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 DIST_COMMON = $(srcdir)/Makefile.am $(includecoin_HEADERS)
 mkinstalldirs = $(install_sh) -d
-CONFIG_HEADER = config.h config_osi.h \
+CONFIG_HEADER = $(top_builddir)/src/Osi/config.h \
+	$(top_builddir)/src/Osi/config_osi.h \
 	$(top_builddir)/src/OsiCommonTest/config_osicommontest.h \
 	$(top_builddir)/src/OsiCpx/config_osicpx.h \
 	$(top_builddir)/src/OsiGlpk/config_osiglpk.h \
 	$(top_builddir)/src/OsiGrb/config_osigrb.h \
 	$(top_builddir)/src/OsiMsk/config_osimsk.h \
 	$(top_builddir)/src/OsiXpr/config_osixpr.h \
-	$(top_builddir)/src/OsiSpx/config_osispx.h \
-	$(top_builddir)/src/OsiScip/config_osiscip.h
+	$(top_builddir)/src/OsiSpx/config_osispx.h config_osiscip.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
@@ -156,19 +154,17 @@ am__uninstall_files_from_dir = { \
 am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(includecoindir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 am__DEPENDENCIES_1 =
-libOsi_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
-am_libOsi_la_OBJECTS = OsiAuxInfo.lo OsiBranchingObject.lo \
-	OsiChooseVariable.lo OsiColCut.lo OsiCut.lo OsiCuts.lo \
-	OsiNames.lo OsiPresolve.lo OsiRowCut.lo OsiRowCutDebugger.lo \
-	OsiSolverBranch.lo OsiSolverInterface.lo OsiFeatures.lo
-libOsi_la_OBJECTS = $(am_libOsi_la_OBJECTS)
+libOsiScip_la_DEPENDENCIES = ../Osi/libOsi.la $(am__DEPENDENCIES_1)
+am_libOsiScip_la_OBJECTS = OsiScipSolverInterface.lo
+libOsiScip_la_OBJECTS = $(am_libOsiScip_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
 am__v_lt_1 = 
-libOsi_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
-	$(CXXFLAGS) $(libOsi_la_LDFLAGS) $(LDFLAGS) -o $@
+libOsiScip_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
+	$(AM_CXXFLAGS) $(CXXFLAGS) $(libOsiScip_la_LDFLAGS) $(LDFLAGS) \
+	-o $@
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -181,18 +177,10 @@ AM_V_at = $(am__v_at_@AM_V@)
 am__v_at_ = $(am__v_at_@AM_DEFAULT_V@)
 am__v_at_0 = @
 am__v_at_1 = 
-DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)/src/OsiCommonTest -I$(top_builddir)/src/OsiCpx -I$(top_builddir)/src/OsiGlpk -I$(top_builddir)/src/OsiGrb -I$(top_builddir)/src/OsiMsk -I$(top_builddir)/src/OsiXpr -I$(top_builddir)/src/OsiSpx -I$(top_builddir)/src/OsiScip
+DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)/src/Osi -I$(top_builddir)/src/OsiCommonTest -I$(top_builddir)/src/OsiCpx -I$(top_builddir)/src/OsiGlpk -I$(top_builddir)/src/OsiGrb -I$(top_builddir)/src/OsiMsk -I$(top_builddir)/src/OsiXpr -I$(top_builddir)/src/OsiSpx
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__maybe_remake_depfiles = depfiles
-am__depfiles_remade = ./$(DEPDIR)/OsiAuxInfo.Plo \
-	./$(DEPDIR)/OsiBranchingObject.Plo \
-	./$(DEPDIR)/OsiChooseVariable.Plo ./$(DEPDIR)/OsiColCut.Plo \
-	./$(DEPDIR)/OsiCut.Plo ./$(DEPDIR)/OsiCuts.Plo \
-	./$(DEPDIR)/OsiFeatures.Plo ./$(DEPDIR)/OsiNames.Plo \
-	./$(DEPDIR)/OsiPresolve.Plo ./$(DEPDIR)/OsiRowCut.Plo \
-	./$(DEPDIR)/OsiRowCutDebugger.Plo \
-	./$(DEPDIR)/OsiSolverBranch.Plo \
-	./$(DEPDIR)/OsiSolverInterface.Plo
+am__depfiles_remade = ./$(DEPDIR)/OsiScipSolverInterface.Plo
 am__mv = mv -f
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -230,7 +218,7 @@ AM_V_CCLD = $(am__v_CCLD_@AM_V@)
 am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = $(libOsi_la_SOURCES)
+SOURCES = $(libOsiScip_la_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -238,7 +226,7 @@ am__can_run_installinfo = \
   esac
 HEADERS = $(includecoin_HEADERS)
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP) \
-	config.h.in config_osi.h.in
+	config_osiscip.h.in
 # Read a list of newline-separated strings from the standard input,
 # and print each of them once, without duplicates.  Input order is
 # *not* preserved.
@@ -471,66 +459,33 @@ COIN_HAS_LATEX = @COIN_HAS_LATEX_TRUE@TRUE
 DOXYTAG_EDIT = sed -e 's|@baredocdir_nosub@|$(datarootdir)/doc|g'
 
 ########################################################################
-#                               libOsi                                 #
+#                             libOsiScip                                 
 ########################################################################
 
-# Name of the library compiled in this directory.  We want it to be installed
-# in $libdir
-lib_LTLIBRARIES = libOsi.la
+# Name of the library compiled in this directory.
+lib_LTLIBRARIES = libOsiScip.la
 
 # List all source files for this library, including headers
-libOsi_la_SOURCES = \
-	OsiConfig.h \
-	OsiAuxInfo.cpp OsiAuxInfo.hpp \
-	OsiBranchingObject.cpp OsiBranchingObject.hpp \
-	OsiChooseVariable.cpp OsiChooseVariable.hpp \
-	OsiColCut.cpp OsiColCut.hpp \
-	OsiCollections.hpp \
-	OsiCut.cpp OsiCut.hpp \
-	OsiCuts.cpp OsiCuts.hpp \
-	OsiNames.cpp \
-	OsiPresolve.cpp OsiPresolve.hpp \
-	OsiRowCut.cpp OsiRowCut.hpp \
-	OsiRowCutDebugger.cpp OsiRowCutDebugger.hpp \
-	OsiSolverBranch.cpp OsiSolverBranch.hpp \
-	OsiSolverInterface.cpp OsiSolverInterface.hpp \
-	OsiSolverParameters.hpp \
-	OsiFeatures.cpp OsiFeatures.hpp
-
+libOsiScip_la_SOURCES = OsiScipSolverInterface.cpp OsiScipSolverInterface.hpp
 
 # List all additionally required libraries
-libOsi_la_LIBADD = $(OSILIB_LFLAGS)
+libOsiScip_la_LIBADD = ../Osi/libOsi.la $(OSISCIPLIB_LFLAGS)
 
-# This is for libtool
-libOsi_la_LDFLAGS = $(LT_LDFLAGS)
+# This is for libtool (on Windows)
+libOsiScip_la_LDFLAGS = $(LT_LDFLAGS)
 
-# Here list all include flags.
-AM_CPPFLAGS = $(OSILIB_CFLAGS)
+# Here list all include flags, relative to this "srcdir" directory.
+AM_CPPFLAGS = -I$(srcdir)/../Osi $(OSISCIPLIB_CFLAGS)
 
 ########################################################################
 #                Headers that need to be installed                     #
 ########################################################################
 
 # Here list all the header files that are required by a user of the library,
-# and that therefore should be installed in pkgincludedir
+# and that therefore should be installed in 'include/coin-or'
 includecoindir = $(pkgincludedir)
-includecoin_HEADERS = \
-	OsiAuxInfo.hpp \
-	OsiBranchingObject.hpp \
-	OsiChooseVariable.hpp \
-	OsiColCut.hpp \
-	OsiCollections.hpp \
-	OsiCut.hpp \
-	OsiCuts.hpp \
-	OsiPresolve.hpp \
-	OsiRowCut.hpp \
-	OsiRowCutDebugger.hpp \
-	OsiSolverBranch.hpp \
-	OsiSolverInterface.hpp \
-	OsiSolverParameters.hpp \
-	OsiFeatures.hpp
-
-all: config.h config_osi.h
+includecoin_HEADERS = OsiScipSolverInterface.hpp
+all: config_osiscip.h
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
 .SUFFIXES:
@@ -544,9 +499,9 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(top_srcdir
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign src/Osi/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign src/OsiScip/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign src/Osi/Makefile
+	  $(AUTOMAKE) --foreign src/OsiScip/Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
 	  *config.status*) \
@@ -566,28 +521,16 @@ $(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(am__aclocal_m4_deps):
 
-config.h: stamp-h1
-	@test -f $@ || rm -f stamp-h1
-	@test -f $@ || $(MAKE) $(AM_MAKEFLAGS) stamp-h1
+config_osiscip.h: stamp-h10
+	@test -f $@ || rm -f stamp-h10
+	@test -f $@ || $(MAKE) $(AM_MAKEFLAGS) stamp-h10
 
-stamp-h1: $(srcdir)/config.h.in $(top_builddir)/config.status
-	@rm -f stamp-h1
-	cd $(top_builddir) && $(SHELL) ./config.status src/Osi/config.h
-$(srcdir)/config.h.in: @MAINTAINER_MODE_TRUE@ $(am__configure_deps) 
-	($(am__cd) $(top_srcdir) && $(AUTOHEADER))
-	rm -f stamp-h1
-	touch $@
-
-config_osi.h: stamp-h2
-	@test -f $@ || rm -f stamp-h2
-	@test -f $@ || $(MAKE) $(AM_MAKEFLAGS) stamp-h2
-
-stamp-h2: $(srcdir)/config_osi.h.in $(top_builddir)/config.status
-	@rm -f stamp-h2
-	cd $(top_builddir) && $(SHELL) ./config.status src/Osi/config_osi.h
+stamp-h10: $(srcdir)/config_osiscip.h.in $(top_builddir)/config.status
+	@rm -f stamp-h10
+	cd $(top_builddir) && $(SHELL) ./config.status src/OsiScip/config_osiscip.h
 
 distclean-hdr:
-	-rm -f config.h stamp-h1 config_osi.h stamp-h2
+	-rm -f config_osiscip.h stamp-h10
 
 install-libLTLIBRARIES: $(lib_LTLIBRARIES)
 	@$(NORMAL_INSTALL)
@@ -624,8 +567,8 @@ clean-libLTLIBRARIES:
 	  rm -f $${locs}; \
 	}
 
-libOsi.la: $(libOsi_la_OBJECTS) $(libOsi_la_DEPENDENCIES) $(EXTRA_libOsi_la_DEPENDENCIES) 
-	$(AM_V_CXXLD)$(libOsi_la_LINK) -rpath $(libdir) $(libOsi_la_OBJECTS) $(libOsi_la_LIBADD) $(LIBS)
+libOsiScip.la: $(libOsiScip_la_OBJECTS) $(libOsiScip_la_DEPENDENCIES) $(EXTRA_libOsiScip_la_DEPENDENCIES) 
+	$(AM_V_CXXLD)$(libOsiScip_la_LINK) -rpath $(libdir) $(libOsiScip_la_OBJECTS) $(libOsiScip_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -633,19 +576,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OsiAuxInfo.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OsiBranchingObject.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OsiChooseVariable.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OsiColCut.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OsiCut.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OsiCuts.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OsiFeatures.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OsiNames.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OsiPresolve.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OsiRowCut.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OsiRowCutDebugger.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OsiSolverBranch.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OsiSolverInterface.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OsiScipSolverInterface.Plo@am__quote@ # am--include-marker
 
 $(am__depfiles_remade):
 	@$(MKDIR_P) $(@D)
@@ -757,7 +688,7 @@ distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
 check-am: all-am
 check: check-am
-all-am: Makefile $(LTLIBRARIES) $(HEADERS) config.h config_osi.h
+all-am: Makefile $(LTLIBRARIES) $(HEADERS) config_osiscip.h
 installdirs:
 	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(includecoindir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
@@ -798,19 +729,7 @@ clean-am: clean-generic clean-libLTLIBRARIES clean-libtool \
 	mostlyclean-am
 
 distclean: distclean-am
-		-rm -f ./$(DEPDIR)/OsiAuxInfo.Plo
-	-rm -f ./$(DEPDIR)/OsiBranchingObject.Plo
-	-rm -f ./$(DEPDIR)/OsiChooseVariable.Plo
-	-rm -f ./$(DEPDIR)/OsiColCut.Plo
-	-rm -f ./$(DEPDIR)/OsiCut.Plo
-	-rm -f ./$(DEPDIR)/OsiCuts.Plo
-	-rm -f ./$(DEPDIR)/OsiFeatures.Plo
-	-rm -f ./$(DEPDIR)/OsiNames.Plo
-	-rm -f ./$(DEPDIR)/OsiPresolve.Plo
-	-rm -f ./$(DEPDIR)/OsiRowCut.Plo
-	-rm -f ./$(DEPDIR)/OsiRowCutDebugger.Plo
-	-rm -f ./$(DEPDIR)/OsiSolverBranch.Plo
-	-rm -f ./$(DEPDIR)/OsiSolverInterface.Plo
+		-rm -f ./$(DEPDIR)/OsiScipSolverInterface.Plo
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-hdr distclean-tags
@@ -856,19 +775,7 @@ install-ps-am:
 installcheck-am:
 
 maintainer-clean: maintainer-clean-am
-		-rm -f ./$(DEPDIR)/OsiAuxInfo.Plo
-	-rm -f ./$(DEPDIR)/OsiBranchingObject.Plo
-	-rm -f ./$(DEPDIR)/OsiChooseVariable.Plo
-	-rm -f ./$(DEPDIR)/OsiColCut.Plo
-	-rm -f ./$(DEPDIR)/OsiCut.Plo
-	-rm -f ./$(DEPDIR)/OsiCuts.Plo
-	-rm -f ./$(DEPDIR)/OsiFeatures.Plo
-	-rm -f ./$(DEPDIR)/OsiNames.Plo
-	-rm -f ./$(DEPDIR)/OsiPresolve.Plo
-	-rm -f ./$(DEPDIR)/OsiRowCut.Plo
-	-rm -f ./$(DEPDIR)/OsiRowCutDebugger.Plo
-	-rm -f ./$(DEPDIR)/OsiSolverBranch.Plo
-	-rm -f ./$(DEPDIR)/OsiSolverInterface.Plo
+		-rm -f ./$(DEPDIR)/OsiScipSolverInterface.Plo
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 
@@ -1018,10 +925,10 @@ uninstall-doc:
 	install-doxygen-docs uninstall-doxygen-docs
 
 install-exec-local:
-	$(install_sh_DATA) config_osi.h $(DESTDIR)$(includecoindir)/OsiConfig.h
+	$(install_sh_DATA) config_osiscip.h $(DESTDIR)$(includecoindir)/OsiScipConfig.h
 
 uninstall-local:
-	rm -f $(DESTDIR)$(includecoindir)/OsiConfig.h
+	rm -f $(DESTDIR)$(includecoindir)/OsiScipConfig.h
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

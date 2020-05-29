@@ -656,12 +656,15 @@ OSI_EXAMPLES_SOLVER_PCNAME
 OSI_EXAMPLES_SOLVER_LFLAGS
 OSI_EXAMPLES_SOLVER_CFLAGS
 OSI_EXAMPLES_SOLVER_NAME
+OSISCIPLIB_PCFILES
 OSIGRBLIB_PCFILES
 OSIXPRLIB_PCFILES
 OSIMSKLIB_PCFILES
 OSICPXLIB_PCFILES
 OSITEST_CFLAGS_NOPC
 OSITEST_LFLAGS_NOPC
+OSISCIPLIB_CFLAGS_NOPC
+OSISCIPLIB_LFLAGS_NOPC
 OSIGRBLIB_CFLAGS_NOPC
 OSIGRBLIB_LFLAGS_NOPC
 OSIXPRLIB_CFLAGS_NOPC
@@ -674,6 +677,10 @@ OSKSPXLIB_CFLAGS_NOPC
 OSKSPXLIB_LFLAGS_NOPC
 OSIGLPKLIB_CFLAGS_NOPC
 OSIGLPKLIB_LFLAGS_NOPC
+COIN_HAS_SCIP_FALSE
+COIN_HAS_SCIP_TRUE
+OSISCIPLIB_CFLAGS
+OSISCIPLIB_LFLAGS
 COIN_HAS_GUROBI_FALSE
 COIN_HAS_GUROBI_TRUE
 OSIGRBLIB_CFLAGS
@@ -902,6 +909,9 @@ with_xpress_cflags
 with_gurobi
 with_gurobi_lflags
 with_gurobi_cflags
+with_scip
+with_scip_lflags
+with_scip_cflags
 with_dot
 '
       ac_precious_vars='build_alias
@@ -1647,6 +1657,15 @@ Optional Packages:
   --with-gurobi-lflags    Linker flags for Gurobi appropriate for your
                           environment. (Most often, -l specs for libraries.)
   --with-gurobi-cflags    Compiler flags for Gurobi appropriate for your
+                          environment. (Most often, -I specs for header file
+                          directories.)
+  --with-scip             Use Scip. If an argument is given, 'yes' is
+                          equivalent to --with-scip, 'no' is
+                          equivalent to --without-scip. Any other argument is
+                          applied as for --with-scip-lflags
+  --with-scip-lflags      Linker flags for Scip appropriate for your
+                          environment. (Most often, -l specs for libraries.)
+  --with-scip-cflags      Compiler flags for Scip appropriate for your
                           environment. (Most often, -I specs for header file
                           directories.)
   --with-dot              use dot (from graphviz) when creating documentation
@@ -19571,6 +19590,275 @@ $as_echo "#define OSI_HAS_GUROBI 1" >>confdefs.h
 
 
 
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for package Scip with function SCIPcreate" >&5
+$as_echo_n "checking for package Scip with function SCIPcreate... " >&6; }
+
+# Make sure the necessary variables exist for each client package.
+
+
+
+
+
+
+
+# Check to see if the user has overridden configure parameters from the
+# environment.
+
+  coin_has_scip=noInfo
+  if test x"$COIN_SKIP_PROJECTS" != x ; then
+    for pkg in $COIN_SKIP_PROJECTS ; do
+      if test "$pkg" = "$scip" ; then
+        coin_has_scip=skipping
+      fi
+    done
+  fi
+
+# If we're not skipping this project, define and process the command line
+# options according to the cmdopts parameter. Then invoke FIND_PRIM_PKG to do
+# the heavy lifting.
+
+  if test "$coin_has_scip" != skipping ; then
+
+
+
+
+# Check whether --with-scip was given.
+if test "${with_scip+set}" = set; then :
+  withval=$with_scip;
+fi
+
+
+
+# Check whether --with-scip-lflags was given.
+if test "${with_scip_lflags+set}" = set; then :
+  withval=$with_scip_lflags;
+fi
+
+
+
+# Check whether --with-scip-cflags was given.
+if test "${with_scip_cflags+set}" = set; then :
+  withval=$with_scip_cflags;
+fi
+
+
+
+
+
+  dflt_action=yes
+
+# Initialize variables for the primary library.
+
+  coin_has_scip=noInfo
+  scip_lflags=
+  scip_cflags=
+  scip_data=
+
+# --with-prim is always present. If the client specified dataonly, its value
+# is assigned to prim_data.
+
+  withval="$with_scip"
+  if test -n "$withval" ; then
+    case "$withval" in
+      no )
+        coin_has_scip=skipping
+        ;;
+      yes )
+        coin_has_scip=requested
+        ;;
+      build )
+        coin_has_scip=build
+        ;;
+      * )
+        coin_has_scip=yes
+        scip_lflags="$withval"
+        ;;
+    esac
+  fi
+
+# --with-prim-lflags and --with-prim-cflags are present unless the client
+# specified dataonly. Specifying --with-prim=no overrides the individual
+# options for lflags and cflags.
+
+  if test "$coin_has_scip" != skipping ; then
+       withval="$with_scip_lflags"
+       if test -n "$withval" ; then
+         case "$withval" in
+           build | no | yes )
+             as_fn_error $? "\"$withval\" is not valid here; please specify linker flags appropriate for your environment." "$LINENO" 5
+             ;;
+           * )
+             coin_has_scip=yes
+             scip_lflags="$withval"
+             ;;
+         esac
+       fi
+
+       withval="$with_scip_cflags"
+       if test -n "$withval" ; then
+         case "$withval" in
+           build | no | yes )
+             as_fn_error $? "\"$withval\" is not valid here; please specify compiler flags appropriate for your environment." "$LINENO" 5
+             ;;
+           * )
+             coin_has_scip=yes
+             scip_cflags="$withval"
+             ;;
+         esac
+       fi
+     fi
+
+# --with-prim-data will be present unless the client specified nodata.
+# Specifying --with-prim=no overrides the individual option for data.
+
+
+
+# At this point, coin_has_prim can be one of noInfo (no user options
+# specified), skipping (user said no), requested or build (user said yes
+# or build and gave no further guidance), or yes (user specified one or
+# more --with-prim options). If we're already at yes or skipping, we're
+# done looking.
+
+# If there are no user options (noInfo) and the default is no, we're skipping.
+# Otherwise, the default must be yes or build; consider the package requested.
+# A default action we don't recognise defaults to yes.
+
+  if test "$coin_has_scip" = noInfo ; then
+    case $dflt_action in
+      no )
+        coin_has_scip=skipping
+        ;;
+      build )
+        coin_has_scip=build
+        ;;
+      * )
+        coin_has_scip=requested
+        ;;
+    esac
+  fi
+
+# Now coin_has_prim can be one of skipping, yes, build, or requested. For
+# build or requested, use the parameter values or invent some.
+
+  case $coin_has_scip in
+    build | requested)
+      scip_lflags="-lscip"
+         if test "$coin_has_scip" = build ; then
+              scip_cflags="-I\$(pkgincludedir)/ThirdParty"
+            fi
+
+      coin_has_scip=yes
+      ;;
+    skipping | yes )
+      ;;
+    * )
+      { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Unexpected status \"$coin_has_scip\" in COIN_FIND_PRIM_LIB" >&5
+$as_echo "$as_me: WARNING: Unexpected status \"$coin_has_scip\" in COIN_FIND_PRIM_LIB" >&2;}
+      ;;
+  esac
+
+# At this point, coin_has_prim is yes or skipping.  Time to run a link check,
+# if we have a function (SCIPcreate). Use whatever we've collected for lflags, plus
+# other libraries () as the other libraries parameter to AC_SEARCH_LIBS,
+# leaving the library parameter blank.
+
+  if test $coin_has_scip != skipping ; then
+    ac_save_LIBS=$LIBS
+       LIBS="$scip_lflags "
+       cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char SCIPcreate ();
+int
+main ()
+{
+return SCIPcreate ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_link "$LINENO"; then :
+
+else
+  coin_has_scip=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+       LIBS=$ac_save_LIBS
+  fi
+
+# The final value of coin_has_prim will be yes, no, or skipping. No means that
+# the link check failed. Yes means that we passed the link check, or no link
+# check was performed. Skipping means the user said `don't use.'
+
+# Define BUILDTOOLS_DEBUG to enable debugging output
+
+    if test "$BUILDTOOLS_DEBUG" = 1 ; then
+      { $as_echo "$as_me:${as_lineno-$LINENO}: FIND_PRIM_LIB result for scip: \"$coin_has_scip\"" >&5
+$as_echo "$as_me: FIND_PRIM_LIB result for scip: \"$coin_has_scip\"" >&6;}
+      { $as_echo "$as_me:${as_lineno-$LINENO}: Collected values for package 'scip'" >&5
+$as_echo "$as_me: Collected values for package 'scip'" >&6;}
+      { $as_echo "$as_me:${as_lineno-$LINENO}: scip_lflags is \"$scip_lflags\"" >&5
+$as_echo "$as_me: scip_lflags is \"$scip_lflags\"" >&6;}
+      { $as_echo "$as_me:${as_lineno-$LINENO}: scip_cflags is \"$scip_cflags\"" >&5
+$as_echo "$as_me: scip_cflags is \"$scip_cflags\"" >&6;}
+      { $as_echo "$as_me:${as_lineno-$LINENO}: scip_data is \"$scip_data\"" >&5
+$as_echo "$as_me: scip_data is \"$scip_data\"" >&6;}
+      { $as_echo "$as_me:${as_lineno-$LINENO}: scip_pcfiles is \"$scip_pcfiles\"" >&5
+$as_echo "$as_me: scip_pcfiles is \"$scip_pcfiles\"" >&6;}
+    fi
+
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: $coin_has_scip" >&5
+$as_echo "$coin_has_scip" >&6; }
+  else
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: $coin_has_scip due to COIN_SKIP_PROJECTS" >&5
+$as_echo "$coin_has_scip due to COIN_SKIP_PROJECTS" >&6; }
+  fi
+
+# Possibilities are `yes', `no', or `skipping'. Normalise to `yes' or `no'.
+
+  if test "$coin_has_scip" != yes ; then
+    coin_has_scip=no
+  fi
+
+# Create an automake conditional COIN_HAS_PRIM.
+
+   if test $coin_has_scip = yes; then
+  COIN_HAS_SCIP_TRUE=
+  COIN_HAS_SCIP_FALSE='#'
+else
+  COIN_HAS_SCIP_TRUE='#'
+  COIN_HAS_SCIP_FALSE=
+fi
+
+
+# If we've located the package, define preprocessor symbol COIN_HAS_PRIM
+# and augment the necessary variables for the client packages.
+
+  if test $coin_has_scip = yes ; then
+
+$as_echo "#define OSI_HAS_SCIP 1" >>confdefs.h
+
+    OSISCIPLIB_LFLAGS="$scip_lflags $OSISCIPLIB_LFLAGS"
+       OSISCIPLIB_CFLAGS="$scip_cflags $OSISCIPLIB_CFLAGS"
+      OSITEST_LFLAGS="$scip_lflags $OSITEST_LFLAGS"
+       OSITEST_CFLAGS="$scip_cflags $OSITEST_CFLAGS"
+
+
+# Finally, set up PRIM_DATA, unless the user specified nodata.
+
+
+  fi
+
+
+
    if test "$BUILDTOOLS_DEBUG" = 1 ; then
         { $as_echo "$as_me:${as_lineno-$LINENO}: FINALIZE_FLAGS for OsiGlpkLib:" >&5
 $as_echo "$as_me: FINALIZE_FLAGS for OsiGlpkLib:" >&6;}
@@ -19866,6 +20154,55 @@ $as_echo "$as_me: OSIGRBLIB_LFLAGS: \"${OSIGRBLIB_LFLAGS}\"" >&6;}
 $as_echo "$as_me: OSIGRBLIB_CFLAGS: \"${OSIGRBLIB_CFLAGS}\"" >&6;}
       fi
      if test "$BUILDTOOLS_DEBUG" = 1 ; then
+        { $as_echo "$as_me:${as_lineno-$LINENO}: FINALIZE_FLAGS for OsiScipLib:" >&5
+$as_echo "$as_me: FINALIZE_FLAGS for OsiScipLib:" >&6;}
+      fi
+      OSISCIPLIB_LFLAGS_NOPC=$OSISCIPLIB_LFLAGS
+
+      OSISCIPLIB_CFLAGS_NOPC=$OSISCIPLIB_CFLAGS
+
+      if test -n "${OSISCIPLIB_PCFILES}" ; then
+        temp_CFLAGS=`PKG_CONFIG_PATH="$COIN_PKG_CONFIG_PATH" $PKG_CONFIG --cflags ${OSISCIPLIB_PCFILES}`
+        temp_LFLAGS=`PKG_CONFIG_PATH="$COIN_PKG_CONFIG_PATH" $PKG_CONFIG --libs ${OSISCIPLIB_PCFILES}`
+        OSISCIPLIB_CFLAGS="$temp_CFLAGS ${OSISCIPLIB_CFLAGS}"
+        OSISCIPLIB_LFLAGS="$temp_LFLAGS ${OSISCIPLIB_LFLAGS}"
+      fi
+
+      # setup XYZ_EXPORT symbol for library users
+      libexport_attribute=
+      if test "$enable_shared" = yes ; then
+        case $build_os in
+          cygwin* | mingw* | msys* | cegcc* )
+            libexport_attribute="__declspec(dllimport)"
+            if test "$enable_static" = yes ; then
+              as_fn_error $? "Cannot do DLL and static LIB builds simultaneously. Do not add --enable-static without --disable-shared." "$LINENO" 5
+            fi
+          ;;
+        esac
+      fi
+
+cat >>confdefs.h <<_ACEOF
+#define OSISCIPLIB_EXPORT $libexport_attribute
+_ACEOF
+
+
+      # add -DXYZ_BUILD to XYZ_CFLAGS
+      OSISCIPLIB_CFLAGS="${OSISCIPLIB_CFLAGS} -DOSISCIPLIB_BUILD"
+
+      # Define BUILDTOOLS_DEBUG to enable debugging output
+      if test "$BUILDTOOLS_DEBUG" = 1 ; then
+        { $as_echo "$as_me:${as_lineno-$LINENO}: OSISCIPLIB_LFLAGS_NOPC: \"${OSISCIPLIB_LFLAGS_NOPC}\"" >&5
+$as_echo "$as_me: OSISCIPLIB_LFLAGS_NOPC: \"${OSISCIPLIB_LFLAGS_NOPC}\"" >&6;}
+        { $as_echo "$as_me:${as_lineno-$LINENO}: OSISCIPLIB_CFLAGS_NOPC: \"${OSISCIPLIB_CFLAGS_NOPC}\"" >&5
+$as_echo "$as_me: OSISCIPLIB_CFLAGS_NOPC: \"${OSISCIPLIB_CFLAGS_NOPC}\"" >&6;}
+        { $as_echo "$as_me:${as_lineno-$LINENO}: adding \"${OSISCIPLIB_PCFILES}\"" >&5
+$as_echo "$as_me: adding \"${OSISCIPLIB_PCFILES}\"" >&6;}
+        { $as_echo "$as_me:${as_lineno-$LINENO}: OSISCIPLIB_LFLAGS: \"${OSISCIPLIB_LFLAGS}\"" >&5
+$as_echo "$as_me: OSISCIPLIB_LFLAGS: \"${OSISCIPLIB_LFLAGS}\"" >&6;}
+        { $as_echo "$as_me:${as_lineno-$LINENO}: OSISCIPLIB_CFLAGS: \"${OSISCIPLIB_CFLAGS}\"" >&5
+$as_echo "$as_me: OSISCIPLIB_CFLAGS: \"${OSISCIPLIB_CFLAGS}\"" >&6;}
+      fi
+     if test "$BUILDTOOLS_DEBUG" = 1 ; then
         { $as_echo "$as_me:${as_lineno-$LINENO}: FINALIZE_FLAGS for OsiTest:" >&5
 $as_echo "$as_me: FINALIZE_FLAGS for OsiTest:" >&6;}
       fi
@@ -19920,6 +20257,9 @@ $as_echo "$as_me: OSITEST_CFLAGS: \"${OSITEST_CFLAGS}\"" >&6;}
 
 
 # Make sure the necessary variables exist for each client package.
+
+
+
 
 
 
@@ -20040,6 +20380,22 @@ $as_echo "$as_me: OSIGRBLIB_LFLAGS: \"${OSIGRBLIB_LFLAGS}\"" >&6;}
          { $as_echo "$as_me:${as_lineno-$LINENO}: OSIGRBLIB_CFLAGS: \"${OSIGRBLIB_CFLAGS}\"" >&5
 $as_echo "$as_me: OSIGRBLIB_CFLAGS: \"${OSIGRBLIB_CFLAGS}\"" >&6;}
        fi
+      if test -n "$OSISCIPLIB_PCFILES" ; then OSISCIPLIB_PCFILES="$OSISCIPLIB_PCFILES osi" ; fi
+       OSISCIPLIB_LFLAGS="$OSISCIPLIB_LFLAGS $OSILIB_LFLAGS"
+       OSISCIPLIB_CFLAGS="$OSISCIPLIB_CFLAGS `echo $OSILIB_CFLAGS | sed -e s/-DOSILIB_BUILD//`"
+
+# Define BUILDTOOLS_DEBUG to enable debugging output
+
+       if test "$BUILDTOOLS_DEBUG" = 1 ; then
+         { $as_echo "$as_me:${as_lineno-$LINENO}: CHK_HERE adding OsiLib to OsiScipLib:" >&5
+$as_echo "$as_me: CHK_HERE adding OsiLib to OsiScipLib:" >&6;}
+         { $as_echo "$as_me:${as_lineno-$LINENO}: OSISCIPLIB_PCFILES: \"${OSISCIPLIB_PCFILES}\"" >&5
+$as_echo "$as_me: OSISCIPLIB_PCFILES: \"${OSISCIPLIB_PCFILES}\"" >&6;}
+         { $as_echo "$as_me:${as_lineno-$LINENO}: OSISCIPLIB_LFLAGS: \"${OSISCIPLIB_LFLAGS}\"" >&5
+$as_echo "$as_me: OSISCIPLIB_LFLAGS: \"${OSISCIPLIB_LFLAGS}\"" >&6;}
+         { $as_echo "$as_me:${as_lineno-$LINENO}: OSISCIPLIB_CFLAGS: \"${OSISCIPLIB_CFLAGS}\"" >&5
+$as_echo "$as_me: OSISCIPLIB_CFLAGS: \"${OSISCIPLIB_CFLAGS}\"" >&6;}
+       fi
 
 
 
@@ -20080,6 +20436,11 @@ elif test "$coin_has_soplex" = yes ; then
   OSI_EXAMPLES_SOLVER_CFLAGS="$OSISPXLIB_CFLAGS"
   OSI_EXAMPLES_SOLVER_LFLAGS="$OSISPXLIB_LFLAGS"
   OSI_EXAMPLES_SOLVER_PCNAME=osi-soplex
+elif test "$coin_has_scip" = yes ; then
+  OSI_EXAMPLES_SOLVER_NAME=OsiScipSolverInterface
+  OSI_EXAMPLES_SOLVER_CFLAGS="$OSISCIPLIB_CFLAGS"
+  OSI_EXAMPLES_SOLVER_LFLAGS="$OSISCIPLIB_LFLAGS"
+  OSI_EXAMPLES_SOLVER_PCNAME=osi-scip
 else
   { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: No solver available, examples will not work." >&5
 $as_echo "$as_me: WARNING: No solver available, examples will not work." >&2;}
@@ -20297,7 +20658,7 @@ done
 
 # Here list all the files that configure should create (except for the
 # configuration header file)
-ac_config_files="$ac_config_files Makefile examples/Makefile src/Osi/Makefile src/OsiCpx/Makefile src/OsiGlpk/Makefile src/OsiMsk/Makefile src/OsiXpr/Makefile src/OsiGrb/Makefile src/OsiSpx/Makefile src/OsiCommonTest/Makefile test/Makefile osi.pc osi-unittests.pc"
+ac_config_files="$ac_config_files Makefile examples/Makefile src/Osi/Makefile src/OsiCpx/Makefile src/OsiGlpk/Makefile src/OsiMsk/Makefile src/OsiXpr/Makefile src/OsiGrb/Makefile src/OsiSpx/Makefile src/OsiScip/Makefile src/OsiCommonTest/Makefile test/Makefile osi.pc osi-unittests.pc"
 
 
 # Here put the location and name of the configuration header file
@@ -20343,6 +20704,13 @@ if test "$coin_has_soplex" = yes ; then
   ac_config_files="$ac_config_files osi-soplex.pc:src/OsiSpx/osi-soplex.pc.in"
 
   ac_config_headers="$ac_config_headers src/OsiSpx/config_osispx.h"
+
+fi
+
+if test "$coin_has_scip" = yes ; then
+  ac_config_files="$ac_config_files osi-scip.pc:src/OsiScip/osi-scip.pc.in"
+
+  ac_config_headers="$ac_config_headers src/OsiScip/config_osiscip.h"
 
 fi
 
@@ -20542,6 +20910,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${COIN_HAS_GUROBI_TRUE}" && test -z "${COIN_HAS_GUROBI_FALSE}"; then
   as_fn_error $? "conditional \"COIN_HAS_GUROBI\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${COIN_HAS_SCIP_TRUE}" && test -z "${COIN_HAS_SCIP_FALSE}"; then
+  as_fn_error $? "conditional \"COIN_HAS_SCIP\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${COIN_HAS_DOXYGEN_TRUE}" && test -z "${COIN_HAS_DOXYGEN_FALSE}"; then
@@ -21541,6 +21913,7 @@ do
     "src/OsiXpr/Makefile") CONFIG_FILES="$CONFIG_FILES src/OsiXpr/Makefile" ;;
     "src/OsiGrb/Makefile") CONFIG_FILES="$CONFIG_FILES src/OsiGrb/Makefile" ;;
     "src/OsiSpx/Makefile") CONFIG_FILES="$CONFIG_FILES src/OsiSpx/Makefile" ;;
+    "src/OsiScip/Makefile") CONFIG_FILES="$CONFIG_FILES src/OsiScip/Makefile" ;;
     "src/OsiCommonTest/Makefile") CONFIG_FILES="$CONFIG_FILES src/OsiCommonTest/Makefile" ;;
     "test/Makefile") CONFIG_FILES="$CONFIG_FILES test/Makefile" ;;
     "osi.pc") CONFIG_FILES="$CONFIG_FILES osi.pc" ;;
@@ -21560,6 +21933,8 @@ do
     "src/OsiXpr/config_osixpr.h") CONFIG_HEADERS="$CONFIG_HEADERS src/OsiXpr/config_osixpr.h" ;;
     "osi-soplex.pc") CONFIG_FILES="$CONFIG_FILES osi-soplex.pc:src/OsiSpx/osi-soplex.pc.in" ;;
     "src/OsiSpx/config_osispx.h") CONFIG_HEADERS="$CONFIG_HEADERS src/OsiSpx/config_osispx.h" ;;
+    "osi-scip.pc") CONFIG_FILES="$CONFIG_FILES osi-scip.pc:src/OsiScip/osi-scip.pc.in" ;;
+    "src/OsiScip/config_osiscip.h") CONFIG_HEADERS="$CONFIG_HEADERS src/OsiScip/config_osiscip.h" ;;
     "doxydoc/doxygen.conf") CONFIG_FILES="$CONFIG_FILES doxydoc/doxygen.conf" ;;
 
   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5;;

@@ -76,6 +76,9 @@
 #undef OSIMSKLIB_EXPORT
 
 /* Library Visibility Attribute */
+#undef OSISCIPLIB_EXPORT
+
+/* Library Visibility Attribute */
 #undef OSITEST_EXPORT
 
 /* Library Visibility Attribute */
@@ -101,6 +104,9 @@
 
 /* Define to 1 if Sample is available. */
 #undef OSI_HAS_SAMPLE
+
+/* Define to 1 if the Scip package is available */
+#undef OSI_HAS_SCIP
 
 /* Define to 1 if SoPlex is available. */
 #undef OSI_HAS_SOPLEX

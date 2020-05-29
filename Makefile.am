@@ -40,6 +40,10 @@ if COIN_HAS_SOPLEX
   SUBDIRS += src/OsiSpx
   pkgconfiglib_DATA += osi-soplex.pc
 endif
+if COIN_HAS_SCIP
+  SUBDIRS += src/OsiScip
+  pkgconfiglib_DATA += osi-scip.pc
+endif
 
 # We don't want to compile the test subdirectory, unless the test target
 # is specified.  But we need to list it as subdirectory to make sure that
